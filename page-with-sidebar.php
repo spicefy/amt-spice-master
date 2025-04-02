@@ -1,6 +1,6 @@
 <?php
 /**
- * Template Name: Page with Sidebar
+ * Template Name: New Page with Sidebar
  * Template Post Type: page
  */
 get_template_part('template-parts/header');
@@ -9,17 +9,34 @@ get_template_part('template-parts/header');
 <main class="container mt-5">
     <div class="row">
         
-        <!-- About Us Section -->
-        <section style="background: linear-gradient(135deg, <?php echo esc_attr( get_theme_mod( 'amt_about_us_bg_color', '#009bbe' ) ); ?>, #0061ff); position: relative;" class="text-start p-5 text-white">
+        <!-- Hero Section -->
+        <section style="background: linear-gradient(135deg, <?php echo esc_attr(get_theme_mod('amt_about_us_bg_color', '#009bbe')); ?>, #0061ff); position: relative;" class="text-start p-5 text-white">
             <div class="container h-100">
                 <div class="row h-100">
-                    <div class="col-md-6 text-start"> <!-- Ensure the text is aligned left -->
+                    <div class="col-md-6 text-start d-flex align-items-center">
                         <?php the_title('<h1 class="display-4 mb-4">', '</h1>'); ?>
                     </div>
                     <div class="col-md-6 position-static">
                         <!-- Image positioned absolutely within the section -->
                         <div style="position: absolute; bottom: 0px; right: 20px; max-width: 350px;">
-                            <img src="<?php echo esc_url( get_theme_mod( 'amt_about_us_image', get_template_directory_uri() . '/assets/images/about.png' ) ); ?>" alt="Chat Support" class="img-fluid rounded">
+                            <?php
+                            if (has_post_thumbnail()) {
+                                // Use featured image if available
+                                the_post_thumbnail('full', [
+                                    'class' => 'img-fluid rounded',
+                                    'alt' => esc_attr(get_the_title())
+                                ]);
+                            } else {
+                                // Fallback to theme mod or default image
+                                $default_image = get_theme_mod(
+                                    'amt_about_us_image',
+                                    get_template_directory_uri() . '/assets/images/about.png'
+                                );
+                                echo '<img src="' . esc_url($default_image) . '" 
+                                     alt="' . esc_attr(get_the_title()) . '" 
+                                     class="img-fluid rounded">';
+                            }
+                            ?>
                         </div>
                     </div>
                 </div>
@@ -27,9 +44,15 @@ get_template_part('template-parts/header');
         </section>
         
         <!-- Sidebar Section -->
-        <aside class="col-lg-4 order-1 order-lg-2 mt-3 text-start"> <!-- Ensure sidebar text is aligned left -->
+        <aside class="col-lg-4 order-1 order-lg-2 mt-3 text-start">
             <div class="p-3 border rounded">
-                <h2 class="fw-bold mb-3"><?php echo esc_html( get_theme_mod( 'amt_sidebar_title', 'About Us' ) ); ?></h2>
+                <h2 class="fw-bold mb-3">
+                    <?php
+                    // Get sidebar title from custom field or theme mod
+                    $sidebar_title = get_post_meta(get_the_ID(), '_sidebar_title', true);
+                    echo $sidebar_title ? esc_html($sidebar_title) : esc_html(get_theme_mod('amt_sidebar_title', 'About Us'));
+                    ?>
+                </h2>
                 
                 <?php
                 wp_nav_menu(array(
@@ -44,11 +67,10 @@ get_template_part('template-parts/header');
             </div>
         </aside>
 
-        <!-- Main Content Section added text-start -->
+        <!-- Main Content Section -->
         <div class="col-lg-8 order-2 order-lg-1 text-start">
             <?php
             while (have_posts()) : the_post();
-                the_title('<h1 class="display-4 mb-4">', '</h1>');
                 the_content();
             endwhile;
             ?>
