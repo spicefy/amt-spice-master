@@ -103,6 +103,8 @@ if (!class_exists('WP_Bootstrap_Navwalker')) {
 require_once get_template_directory() . '/inc/customizer.php'; // Customizer settings
 require_once get_template_directory() . '/inc/template-tags.php';
 require_once get_template_directory() . '/inc/template-functions.php';
+// Include the breadcrumbs function from template-parts
+require_once get_template_directory() . '/template-parts/breadcrumbs.php';
 
 // Add custom classes to sidebar menu links
 function add_menu_link_classes($atts, $item, $args) {
