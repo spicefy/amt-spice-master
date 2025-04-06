@@ -97,12 +97,10 @@ function amt_spice_scripts() {
 add_action('wp_enqueue_scripts', 'amt_spice_scripts');
 
 // Include required files
-//require_once get_template_directory() . '/inc/class-wp-bootstrap-navwalker.php'; chaned to:
-// Register Nav Walker class
 if (!class_exists('WP_Bootstrap_Navwalker')) {
     require_once get_template_directory() . '/inc/class-wp-bootstrap-navwalker.php';
 }
-require_once get_template_directory() . '/inc/customizer.php'; // Customizer now lives here
+require_once get_template_directory() . '/inc/customizer.php'; // Customizer settings
 require_once get_template_directory() . '/inc/template-tags.php';
 require_once get_template_directory() . '/inc/template-functions.php';
 
@@ -116,10 +114,6 @@ function add_menu_link_classes($atts, $item, $args) {
     return $atts;
 }
 add_filter('nav_menu_link_attributes', 'add_menu_link_classes', 10, 3);
-
-//theme customizer
-// functions.php
-
 
 // JSON Sanitization callback
 function amt_sanitize_json($input) {
