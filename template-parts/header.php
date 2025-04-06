@@ -58,3 +58,4 @@
         </div>
     </div>
 </nav>
+<?php the_dynamic_breadcrumbs(); ?>
