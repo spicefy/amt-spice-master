@@ -1,6 +1,6 @@
 <?php
 /**
- * The main template file
+ * Home Page template file
  */
 
 get_template_part('template-parts/header'); // Load custom header
