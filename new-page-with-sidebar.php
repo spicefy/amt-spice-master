@@ -5,10 +5,12 @@
  */
 get_template_part('template-parts/header');
 ?>
-
+<?php the_dynamic_breadcrumbs(); ?>
 <main class="container mt-5">
     <div class="row">
-        
+    <?php 
+    //added breadcrumbs
+   the_dynamic_breadcrumbs(); ?> 
         <!-- Hero Section -->
         <section style="background: linear-gradient(135deg, <?php echo esc_attr(get_theme_mod('amt_about_us_bg_color', '#009bbe')); ?>, #0061ff); position: relative;" class="text-start text-white">
             <div class="container h-100">

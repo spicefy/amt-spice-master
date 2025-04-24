@@ -9,6 +9,9 @@ get_template_part('template-parts/header');
 
 <main class="container mt-5">
     <div class="row">
+    <?php 
+    //added breadcrumbs
+   the_dynamic_breadcrumbs(); ?> 
         <!-- Sidebar - Top on mobile, Right on desktop -->
         <aside class="col-lg-4 order-1 order-lg-2 mt-3">
             <div class="p-3 border rounded">

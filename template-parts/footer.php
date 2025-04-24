@@ -6,36 +6,40 @@
                 <?php
                 $footer_logo = get_theme_mod('amt_footer_logo');
                 if ($footer_logo) {
-                    echo '<img src="' . esc_url($footer_logo) . '" alt="' . get_bloginfo('name') . '" class="mb-3 footer-logo" style="max-width: 110px;">';
+                    echo '<img src="' . esc_url($footer_logo) . '" alt="' . esc_attr(get_bloginfo('name')) . '" class="mb-3 footer-logo" style="max-width: 110px;">';
                 }
                 ?>
-                <p class="footer-description"><?php echo wp_kses_post(get_theme_mod('amt_footer_description', 'Love Matters Africa provides easy-to-access information and news on sexuality and sexual health.')); ?></p>
+                <p class="footer-description">
+                    <?php echo wp_kses_post(get_theme_mod('amt_footer_description', 'Love Matters Africa provides easy-to-access information and news on sexuality and sexual health.')); ?>
+                </p>
             </div>
 
             <!-- Footer Menu Columns -->
             <?php 
             $footer_columns = [
-                'footer1' => [
+                'footer_col1' => [
                     'title' => 'Get Involved', 
                     'col_class' => 'col-md-2',
-                    'theme_location' => 'footer1'
+                    'theme_location' => 'footer-1'
                 ],
-                'footer2' => [
+                'footer_col2' => [
                     'title' => 'Resources', 
                     'col_class' => 'col-md-2',
-                    'theme_location' => 'footer2'
+                    'theme_location' => 'footer-2'
                 ],
-                'footer3' => [
+                'footer_col3' => [
                     'title' => 'About This Site', 
                     'col_class' => 'col-md-3',
-                    'theme_location' => 'footer3'
+                    'theme_location' => 'footer-3'
                 ]
             ];
             
             foreach ($footer_columns as $key => $settings) : 
                 if (has_nav_menu($settings['theme_location'])) : ?>
                     <div class="<?php echo esc_attr($settings['col_class']); ?>">
-                        <h5 class="footer-column-title"><?php echo esc_html(get_theme_mod('amt_' . $key . '_title', $settings['title'])); ?></h5>
+                        <h5 class="footer-column-title">
+                            <?php echo esc_html(get_theme_mod('amt_' . $key . '_title', $settings['title'])); ?>
+                        </h5>
                         <?php
                         wp_nav_menu([
                             'theme_location' => $settings['theme_location'],
@@ -43,8 +47,7 @@
                             'container' => false,
                             'depth' => 1,
                             'walker' => new Footer_Menu_Walker(),
-                            'link_before' => '<span class="footer-link-inner">',
-                            'link_after' => '</span>'
+                            'fallback_cb' => false
                         ]);
                         ?>
                     </div>
@@ -58,17 +61,19 @@
         <div class="social-icons text-center mb-3">
             <?php
             $social_platforms = [
-                'facebook' => ['icon' => 'facebook-f', 'class' => 'fb'],
-                'twitter' => ['icon' => 'twitter', 'class' => 'tw'],
-                'instagram' => ['icon' => 'instagram', 'class' => 'ig'],
-                'youtube' => ['icon' => 'youtube', 'class' => 'yt'],
-                'linkedin' => ['icon' => 'linkedin-in', 'class' => 'li']
+                'facebook' => ['icon' => 'facebook-f', 'class' => 'fb', 'label' => __('Facebook', 'amt-spice')],
+                'twitter' => ['icon' => 'twitter', 'class' => 'tw', 'label' => __('Twitter', 'amt-spice')],
+                'instagram' => ['icon' => 'instagram', 'class' => 'ig', 'label' => __('Instagram', 'amt-spice')],
+                'youtube' => ['icon' => 'youtube', 'class' => 'yt', 'label' => __('YouTube', 'amt-spice')],
+                'linkedin' => ['icon' => 'linkedin-in', 'class' => 'li', 'label' => __('LinkedIn', 'amt-spice')]
             ];
             
             foreach ($social_platforms as $platform => $data) {
                 $url = get_theme_mod('amt_social_' . $platform);
                 if ($url) {
-                    echo '<a href="' . esc_url($url) . '" class="social-icon ' . esc_attr($data['class']) . '" target="_blank" rel="noopener noreferrer" aria-label="' . esc_attr(ucfirst($platform)) . '">';
+                    echo '<a href="' . esc_url($url) . '" class="social-icon ' . esc_attr($data['class']) . '" 
+                          target="_blank" rel="noopener noreferrer" 
+                          aria-label="' . esc_attr($data['label']) . '">';
                     echo '<i class="fab fa-' . esc_attr($data['icon']) . '"></i>';
                     echo '</a>';
                 }
@@ -76,13 +81,13 @@
             ?>
         </div>
 
-        <!-- Footer Links -->
+        <!-- Legal Links -->
         <div class="footer-legal-links text-center">
             <?php
             $legal_links = [
-                'privacy' => ['default' => 'Privacy Notice'],
-                'terms' => ['default' => 'Terms of Use'],
-                'contact' => ['default' => 'Contact Us']
+                'privacy' => ['default' => __('Privacy Notice', 'amt-spice')],
+                'terms' => ['default' => __('Terms of Use', 'amt-spice')],
+                'contact' => ['default' => __('Contact Us', 'amt-spice')]
             ];
             
             $links_output = [];
@@ -91,7 +96,9 @@
                 $text = get_theme_mod('amt_' . $key . '_text', $data['default']);
                 
                 if ($url) {
-                    $is_current = (false !== strpos($_SERVER['REQUEST_URI'], parse_url($url, PHP_URL_PATH)));
+                    $current_url = home_url($_SERVER['REQUEST_URI']);
+                    $is_current = (untrailingslashit($current_url) === untrailingslashit($url));
+                    
                     $links_output[] = sprintf(
                         '<a href="%s" class="footer-legal-link %s">%s</a>',
                         esc_url($url),
@@ -101,20 +108,23 @@
                 }
             }
             
-            echo implode('<span class="link-separator"> | </span>', $links_output);
+            echo implode('<span class="link-separator" aria-hidden="true"> | </span>', $links_output);
             ?>
         </div>
 
         <!-- Copyright -->
         <p class="footer-copyright text-center mt-3">
-            &copy; <?php echo date('Y'); ?> <?php echo esc_html(get_theme_mod('amt_copyright_text', get_bloginfo('name'))); ?>
+            &copy; <?php echo date('Y'); ?> 
+            <?php echo esc_html(get_theme_mod('amt_copyright_text', get_bloginfo('name'))); ?>
         </p>
     </div>
 </footer>
 
 <?php wp_footer(); ?>
 
-<!-- Footer Menu Walker Class -->
+</body>
+</html>
+
 <?php
 class Footer_Menu_Walker extends Walker_Nav_Menu {
     public function start_el(&$output, $item, $depth = 0, $args = [], $id = 0) {
@@ -124,7 +134,7 @@ class Footer_Menu_Walker extends Walker_Nav_Menu {
         $attributes .= !empty($item->attr_title) ? ' title="' . esc_attr($item->attr_title) . '"' : '';
         $attributes .= !empty($item->target) ? ' target="' . esc_attr($item->target) . '"' : '';
         $attributes .= !empty($item->xfn) ? ' rel="' . esc_attr($item->xfn) . '"' : '';
-        $attributes .= !empty($item->url) ? ' href="' . esc_attr($item->url) . '"' : '';
+        $attributes .= !empty($item->url) ? ' href="' . esc_url($item->url) . '"' : '';
         
         $item_output = $args->before;
         $item_output .= '<a class="footer-menu-link"' . $attributes . '>';
@@ -135,6 +145,3 @@ class Footer_Menu_Walker extends Walker_Nav_Menu {
         $output .= apply_filters('walker_nav_menu_start_el', $item_output, $item, $depth, $args);
     }
 }
-?>
-</body>
-</html>
